@@ -43,6 +43,7 @@
 require_git_repo
 require_hubflow_initialized
 hubflow_load_settings
+ddiflow_load_settings
 PREFIX=$(git config --get hubflow.prefix.feature)
 
 usage() {
@@ -226,11 +227,21 @@ cmd_start() {
 	# push it back up to remote repo
 	hubflow_push_latest_changes_to_origin
 
+  issue=$(ddiflow_extract_issue $BRANCH)
+  issuemsg="- There was an error updating issue $issue, so you should update it manually"
+  if [ -n "$issue" ]; then
+    ddiflow_issue_transition "$issue" 'start work'
+    if [ $? -eq 0 ]; then
+      issuemsg="- Updated issue $issue"
+    fi
+  fi
+
 	echo
 	echo "Summary of actions:"
 	echo "- A new branch '$BRANCH' was created, based on '$BASE'"
 	echo "- The branch '$BRANCH' has been pushed up to '$ORIGIN/$BRANCH'"
 	echo "- You are now on branch '$BRANCH'"
+  echo "$issuemsg"
 	echo ""
 	echo "Now, start committing on your feature. When done, create a"
 	echo "pull request on GitHub.  Once that has been merged, use:"
