@@ -231,8 +231,7 @@ cmd_start() {
   issue=$(ddiflow_extract_issue $BRANCH)
   issuemsg="- There was an error updating issue $issue, so you should update it manually"
   if [ -n "$issue" ]; then
-    ddiflow_issue_transition "$issue" 'start work'
-    if [ $? -eq 0 ]; then
+    if ddiflow_issue_transition "$issue" 'start work'; then
       issuemsg="- Updated issue $issue"
     fi
   fi
@@ -582,8 +581,7 @@ cmd_reviewstart() {
   issue=$(ddiflow_extract_issue $BRANCH)
   issuemsg="- There was an error updating issue $issue, so you should update it manually"
   if [ -n "$issue" ]; then
-    ddiflow_issue_transition "$issue" 'to code review'
-    if [ $? -eq 0 ]; then
+    if ddiflow_issue_transition "$issue" 'to code review'; then
       issuemsg="- Updated issue $issue"
     fi
   fi
